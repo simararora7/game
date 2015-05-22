@@ -1,6 +1,8 @@
 package simararora.game;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -9,7 +11,12 @@ import android.view.View;
  * Created by Simar Arora on 22-05-2015.
  */
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
+
+    public static final int WIDTH = 856;
+    public static final int HEIGHT = 480;
+
     private MainThread mainThread;
+    private Background background;
 
     public GamePanel(Context context) {
         super(context);
@@ -20,7 +27,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
+        background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.grassbg1));
+        background.setVector(-5);
         mainThread.setRunning(true);
         mainThread.start();
     }
@@ -46,6 +54,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+        background.update();
+    }
 
+    @Override
+    public void draw(Canvas canvas) {
+        final float scaleFactorX = (float) getWidth() / WIDTH;
+        final float scaleFactorY = (float) getHeight() / HEIGHT;
+
+        if (canvas != null) {
+            final int savedState = canvas.save();
+            canvas.scale(scaleFactorX, scaleFactorY);
+            background.draw(canvas);
+            canvas.restoreToCount(savedState);
+        }
     }
 }

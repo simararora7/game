@@ -51,10 +51,12 @@ public class MainThread extends Thread {
             }
             timeMills = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime - timeMills;
+
             try {
                 sleep(waitTime);
-            } catch (InterruptedException ignored) {
+            } catch (Exception ignored) {
             }
+
             totalTime += System.nanoTime() - startTime;
             frameCount++;
             if (frameCount == FPS) {
