@@ -10,14 +10,14 @@ public class Background {
 
     private Bitmap image;
     private int x, y;
-    private int dx;
+    private static final int GAMESPEED = -5;
 
     public Background(Bitmap image) {
         this.image = image;
     }
 
     public void update() {
-        x += dx;
+        x += GAMESPEED;
         if (x < -GamePanel.WIDTH)
             x = 0;
 
@@ -28,9 +28,5 @@ public class Background {
         if (x < 0) {
             canvas.drawBitmap(image, x + GamePanel.WIDTH, y, null);
         }
-    }
-
-    public void setVector(int dx) {
-        this.dx = dx;
     }
 }

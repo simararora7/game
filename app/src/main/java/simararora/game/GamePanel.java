@@ -3,6 +3,7 @@ package simararora.game;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -17,6 +18,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread mainThread;
     private Background background;
+    private Player player;
 
     public GamePanel(Context context) {
         super(context);
@@ -27,8 +29,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+
         background = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.grassbg1));
-        background.setVector(-5);
+        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.helicopter), 65, 25, 3);
         mainThread.setRunning(true);
         mainThread.start();
     }
@@ -54,7 +57,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        background.update();
+        if (player.getPlaying()) {
+            background.update();
+            player.update();
+        }
     }
 
     @Override
@@ -66,7 +72,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
             background.draw(canvas);
+            player.draw(canvas);
             canvas.restoreToCount(savedState);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (!player.getPlaying()) {
+                player.setPlaying(true);
+            } else {
+                player.setUp(true);
+            }
+            return true;
+        }
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            player.setUp(false);
+            return true;
+        }
+        return super.onTouchEvent(event);
     }
 }
